@@ -14,7 +14,7 @@ export const TaskController = { // O export serve para possibilitar o uso da con
   create(req: Request, res: Response) { // O create faz parte da criação de novas tasks.
     const { title } = req.body;         // O título é decidido pelo usuário.
     
-    const newTask = {                   // Essa constatnte cria uma nova task.
+    const newTask = {                   // Essa constante cria uma nova task.
       id: tasks.length + 1,             // Altera o id automaticamente a cada nova task.
       title,                            // O título é decidido pelo usuário.
       completed: false                  // Por padrão a task vem incompleta.
@@ -37,5 +37,21 @@ export const TaskController = { // O export serve para possibilitar o uso da con
     tasks.splice(taskIndex, 1);         // Remove a task
 
     return res.status(200).json({ message: "Tarefa removida com sucesso" }); // Se isso apareceu, é porque deu certo
+  },
+
+  update(req: Request, res: Response){
+    const { id } = req.params;          // Busca pelo id
+    const { title, completed } = req.body; // Modifica o conteúdo
+    
+    const task = tasks.find(t => t.id === Number(id));
+
+    if(!task){
+      return res.send(404).json({ message: "Tarefa não encontrada" });
+    }
+
+    if (title !== undefined) task.title = title; // Modifica título
+    if (completed !== undefined) task.completed = completed; // Modifica se a task está completa
+
+    return res.json({ message: "Tarefa atualizada com sucesso", task });
   }
 };
